@@ -17,114 +17,131 @@ class PokemonCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.4),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        // ClipRRect is required to clip the overflowing background Pokeball icon
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Stack(
-            children: [
-              // 1. BACKGROUND: Large Pokeball (Positioned partially off-screen)
-              Positioned(
-                bottom: -24,
-                right: -15,
-                child: Icon(
-                  Icons.catching_pokemon,
-                  color: Colors.white.withValues(alpha: 0.2),
-                  size: 125,
-                ),
-              ),
+      // Use LayoutBuilder to access the current constraints of the card
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Calculate element sizes proportionally based on card height
+          final double cardHeight = constraints.maxHeight;
 
-              // 2. INFO: Name & Type Chips (Top Left)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pokemon.name[0].toUpperCase() + pokemon.name.substring(1),
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+          // Background Pokeball size: 82% of the card height
+          final double pokeballSize = cardHeight * 0.82;
+
+          // Pokemon Image size: 70% of the card height
+          final double pokemonSize = cardHeight * 0.70;
+
+          return Container(
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.4),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Stack(
+                children: [
+                  // 1. BACKGROUND: Pokeball (Responsive Size)
+                  Positioned(
+                    bottom: -15, // Slight offset to the bottom-right
+                    right: -10,
+                    child: Icon(
+                      Icons.catching_pokemon,
+                      color: Colors.white.withValues(alpha: 0.2),
+                      size: pokeballSize, // Dynamic Size
+                    ),
+                  ),
+
+                  // 2. INFO: Name & Type (Top Left)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Use Flexible to prevent text overflow on smaller screens
+                        Flexible(
+                          child: Text(
+                            pokemon.name[0].toUpperCase() +
+                                pokemon.name.substring(1),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: pokemon.types
+                              .map(
+                                (type) => Container(
+                                  margin: const EdgeInsets.only(bottom: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    type,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // 3. FOREGROUND: Pokemon Image (Responsive Size)
+                  Positioned(
+                    bottom: 5,
+                    right: 5,
+                    child: Hero(
+                      tag: pokemon.id,
+                      child: CachedNetworkImage(
+                        imageUrl: pokemon.imageUrl,
+                        height: pokemonSize, // Dynamic Size (70%)
+                        width: pokemonSize, // Dynamic Size (70%)
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) => const SizedBox(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error, color: Colors.white),
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: pokemon.types
-                          .map(
-                            (type) => Container(
-                              margin: const EdgeInsets.only(bottom: 4),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                type,
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
+                  ),
+
+                  // 4. ID Number (Top Right)
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Text(
+                      "#${pokemon.id.toString().padLeft(3, '0')}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
-                  ],
-                ),
-              ),
-
-              // 3. FOREGROUND: Pokemon Image
-              // Logic: The Pokemon (bottom: 5) is placed higher than the Pokeball (bottom: -24)
-              // to create a depth effect where the Pokemon "pops" out.
-              Positioned(
-                bottom: 5,
-                right: 5,
-                child: Hero(
-                  tag: pokemon.id,
-                  child: CachedNetworkImage(
-                    imageUrl: pokemon.imageUrl,
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.contain,
-                    placeholder: (context, url) => const SizedBox(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error, color: Colors.white),
                   ),
-                ),
+                ],
               ),
-
-              // 4. ID Number (Top Right Watermark)
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Text(
-                  "#${pokemon.id.toString().padLeft(3, '0')}",
-                  style: GoogleFonts.poppins(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
