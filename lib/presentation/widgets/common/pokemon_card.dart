@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants/app_colors.dart';
-import '../../data/models/pokemon_model.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../data/models/pokemon_model.dart';
 
 class PokemonCard extends StatelessWidget {
   final PokemonModel pokemon;
