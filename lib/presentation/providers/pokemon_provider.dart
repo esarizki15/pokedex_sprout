@@ -1,55 +1,71 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../../data/models/pokemon_model.dart';
 import '../../data/repositories/pokemon_repository.dart';
 
-// Dependency Injection: Dio & Repository
-final dioProvider = Provider((ref) => Dio());
+// 1. Provider Repository (Cukup panggil constructor kosong)
+final pokemonRepositoryProvider = Provider<PokemonRepository>((ref) {
+  return PokemonRepository();
+});
 
-final repositoryProvider = Provider(
-  (ref) => PokemonRepository(ref.watch(dioProvider)),
-);
+// 2. State Notifier Provider
+final pokemonListProvider =
+    StateNotifierProvider<PokemonListNotifier, AsyncValue<List<PokemonModel>>>((
+      ref,
+    ) {
+      return PokemonListNotifier(ref.watch(pokemonRepositoryProvider));
+    });
 
-// State Management Logic
+// 3. Logic Notifier (Tanpa Search, Fokus Pagination)
 class PokemonListNotifier
     extends StateNotifier<AsyncValue<List<PokemonModel>>> {
   final PokemonRepository _repository;
+
+  // State Internal Pagination
   int _offset = 0;
   final int _limit = 20;
   bool _isLoadingMore = false;
   bool _hasMore = true;
 
   PokemonListNotifier(this._repository) : super(const AsyncValue.loading()) {
-    fetchNextPage(); // Load initial data
+    fetchNextPage(); // Load data awal otomatis saat dipanggil
   }
 
   Future<void> fetchNextPage() async {
+    // Cek guard clause: Jangan load kalau sedang loading atau data habis
     if (_isLoadingMore || !_hasMore) return;
+
+    // Set loading flag (tapi jangan ubah state UI jadi loading spin besar)
     _isLoadingMore = true;
 
     try {
-      // Panggil Repository
-      final newPokemons = await _repository.getPokemons(
-        offset: _offset,
-        limit: _limit,
-      );
+      // PERBAIKAN DI SINI:
+      // 1. Nama method jadi 'getPokemonList'
+      // 2. Parameter jadi positional (tanpa nama offset: / limit:)
+      final newPokemons = await _repository.getPokemonList(_offset, _limit);
 
       if (newPokemons.isEmpty) {
         _hasMore = false;
         _isLoadingMore = false;
         return;
       }
-      // Update State: Append data baru ke data lama
-      if (state.value != null) {
-        state = AsyncValue.data([...state.value!, ...newPokemons]);
-      } else {
+
+      // Logic Append Data (Menggabungkan data lama + data baru)
+      state.whenData((oldPokemons) {
+        state = AsyncValue.data([...oldPokemons, ...newPokemons]);
+      });
+
+      // Jika state awal masih loading/null, isi langsung
+      if (state.value == null || state.value!.isEmpty) {
         state = AsyncValue.data(newPokemons);
       }
 
+      // Naikkan offset untuk fetch berikutnya
       _offset += _limit;
     } catch (e, stack) {
-      if (state.value == null) {
+      // Hanya tampilkan error jika data benar-benar kosong (awal)
+      // Jika error saat load more (scroll bawah), biarkan data lama tetap tampil
+      if (state.value == null || state.value!.isEmpty) {
         state = AsyncValue.error(e, stack);
       }
     } finally {
@@ -57,11 +73,3 @@ class PokemonListNotifier
     }
   }
 }
-
-// Provider yang dipanggil UI
-final pokemonListProvider =
-    StateNotifierProvider<PokemonListNotifier, AsyncValue<List<PokemonModel>>>((
-      ref,
-    ) {
-      return PokemonListNotifier(ref.watch(repositoryProvider));
-    });

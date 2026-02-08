@@ -9,8 +9,9 @@ class MovesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (pokemon.moves.isEmpty)
+    if (pokemon.moves.isEmpty) {
       return const Center(child: Text("No Moves Data"));
+    }
 
     return ListView.builder(
       padding: const EdgeInsets.all(20),

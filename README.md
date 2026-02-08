@@ -1,17 +1,32 @@
-# pokedex
+# Pokedex App 📱
 
-A new Flutter project.
+A modern, responsive Pokedex application built with Flutter, demonstrating **Clean Architecture** and **Riverpod** state management.
 
-## Getting Started
+## ✨ Features
 
-This project is a starting point for a Flutter application.
+* **Infinite Scrolling:** Pagination support for browsing thousands of Pokemon.
+* **Responsive Design:** Optimized layout for Portrait and Landscape modes.
+* **Detailed Statistics:** View Base Stats, Evolutions, and Moves.
+* **Beautiful UI:** Custom animations, Hero transitions, and dynamic coloring based on Pokemon types.
+* **Clean Architecture:** Separation of Data, Domain, and Presentation layers.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠 Tech Stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* **Framework:** Flutter (3.10+)
+* **State Management:** Riverpod (StateNotifier)
+* **Network:** Dio
+* **Routing:** GoRouter
+* **Testing:** Mocktail & Flutter Test
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# pokedex_sprout
+## 📸 Screenshots
+
+| Home (Portrait) | Detail (Portrait) | Landscape Mode |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/home.png" width="200"> | <img src="assets/screenshots/detail.png" width="200"> | <img src="assets/screenshots/landscape.png" width="300"> |
+
+## 🚀 How to Run
+
+1.  Clone the repository
+2.  Run `flutter pub get`
+3.  Run `dart run flutter_launcher_icons` (to generate icons)
+4.  Run `flutter run`

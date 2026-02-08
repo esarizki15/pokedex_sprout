@@ -15,7 +15,7 @@ class AboutTab extends StatelessWidget {
     int feet = (totalInches / 12).floor();
     int inches = (totalInches % 12).round();
     String heightString =
-        "$feet'${inches}\" (${heightInMeters.toStringAsFixed(2)} m)";
+        "$feet'$inches\" (${heightInMeters.toStringAsFixed(2)} m)";
 
     double weightInKg = pokemon.weight / 10;
     double weightInLbs = weightInKg * 2.20462;
