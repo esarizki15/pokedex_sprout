@@ -1,13 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../data/models/pokemon_model.dart';
-
-// Pastikan import widget pecahan ini sudah benar sesuai struktur foldermu
-import '../widgets/detail/about_tab.dart';
-import '../widgets/detail/base_stats_tab.dart';
-import '../widgets/detail/evolution_tab.dart';
-import '../widgets/detail/moves_tab.dart';
+import 'package:pokedex/data/models/pokemon_model.dart';
+import 'package:pokedex/presentation/widgets/detail/about_tab.dart';
+import 'package:pokedex/presentation/widgets/detail/base_stats_tab.dart';
+import 'package:pokedex/presentation/widgets/detail/evolution_tab.dart';
+import 'package:pokedex/presentation/widgets/detail/moves_tab.dart';
 
 class DetailScreen extends StatefulWidget {
   final PokemonModel pokemon;

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../presentation/screens/home_screen.dart';
-import '../../presentation/screens/detail_screen.dart';
-import '../../data/models/pokemon_model.dart';
+import 'package:pokedex/data/models/pokemon_model.dart';
+import 'package:pokedex/presentation/screens/detail_screen.dart';
+import 'package:pokedex/presentation/screens/home_screen.dart';
 
 // Provider ini yang akan dipanggil di main.dart
 final routerProvider = Provider<GoRouter>((ref) {

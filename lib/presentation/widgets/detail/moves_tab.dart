@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../data/models/pokemon_model.dart';
+import 'package:pokedex/data/models/pokemon_model.dart';
 
 class MovesTab extends StatelessWidget {
   final PokemonModel pokemon;

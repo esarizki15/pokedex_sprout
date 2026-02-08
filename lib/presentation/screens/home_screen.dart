@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pokedex/presentation/providers/pokemon_provider.dart';
+import 'package:pokedex/presentation/widgets/common/pokemon_card.dart';
 import 'package:shimmer/shimmer.dart';
-import '../providers/pokemon_provider.dart';
-import '../widgets/common/pokemon_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

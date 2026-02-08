@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import '../../data/models/pokemon_model.dart';
-import '../../data/repositories/pokemon_repository.dart';
+import 'package:pokedex/data/models/pokemon_model.dart';
+import 'package:pokedex/data/repositories/pokemon_repository.dart';
 
 // 1. Provider Repository (Cukup panggil constructor kosong)
 final pokemonRepositoryProvider = Provider<PokemonRepository>((ref) {
