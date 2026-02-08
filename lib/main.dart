@@ -29,6 +29,19 @@ class MyApp extends ConsumerWidget {
 
       // Connect GoRouter configuration to MaterialApp
       routerConfig: router,
+
+      // Global Builder: Wraps the entire app to apply specific configurations
+      builder: (context, child) {
+        // Force the text scale factor to 1.0 (No Scaling).
+        // This ensures the UI layout remains consistent even if the user
+        // has set their device's system font size to "Large" or "Extra Large".
+        return MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.noScaling),
+          child: child!,
+        );
+      },
     );
   }
 }
