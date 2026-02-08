@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:pokedex/data/models/pokemon_model.dart';
 import 'package:pokedex/data/repositories/pokemon_repository.dart';
 
-// 1. Provider Repository (Cukup panggil constructor kosong)
+// Provides the PokemonRepository instance
 final pokemonRepositoryProvider = Provider<PokemonRepository>((ref) {
   return PokemonRepository();
 });
 
-// 2. State Notifier Provider
+// Manages the state of the Pokemon list (Pagination)
 final pokemonListProvider =
     StateNotifierProvider<PokemonListNotifier, AsyncValue<List<PokemonModel>>>((
       ref,
@@ -16,32 +16,27 @@ final pokemonListProvider =
       return PokemonListNotifier(ref.watch(pokemonRepositoryProvider));
     });
 
-// 3. Logic Notifier (Tanpa Search, Fokus Pagination)
 class PokemonListNotifier
     extends StateNotifier<AsyncValue<List<PokemonModel>>> {
   final PokemonRepository _repository;
 
-  // State Internal Pagination
+  // Internal pagination state
   int _offset = 0;
   final int _limit = 20;
   bool _isLoadingMore = false;
   bool _hasMore = true;
 
   PokemonListNotifier(this._repository) : super(const AsyncValue.loading()) {
-    fetchNextPage(); // Load data awal otomatis saat dipanggil
+    fetchNextPage(); // Automatically fetch initial data
   }
 
   Future<void> fetchNextPage() async {
-    // Cek guard clause: Jangan load kalau sedang loading atau data habis
+    // Guard clause: prevent fetching if already loading or if no more data exists
     if (_isLoadingMore || !_hasMore) return;
 
-    // Set loading flag (tapi jangan ubah state UI jadi loading spin besar)
     _isLoadingMore = true;
 
     try {
-      // PERBAIKAN DI SINI:
-      // 1. Nama method jadi 'getPokemonList'
-      // 2. Parameter jadi positional (tanpa nama offset: / limit:)
       final newPokemons = await _repository.getPokemonList(_offset, _limit);
 
       if (newPokemons.isEmpty) {
@@ -50,21 +45,21 @@ class PokemonListNotifier
         return;
       }
 
-      // Logic Append Data (Menggabungkan data lama + data baru)
+      // Append new data to the existing list
       state.whenData((oldPokemons) {
         state = AsyncValue.data([...oldPokemons, ...newPokemons]);
       });
 
-      // Jika state awal masih loading/null, isi langsung
+      // Handle initial load case
       if (state.value == null || state.value!.isEmpty) {
         state = AsyncValue.data(newPokemons);
       }
 
-      // Naikkan offset untuk fetch berikutnya
+      // Increment offset for the next fetch
       _offset += _limit;
     } catch (e, stack) {
-      // Hanya tampilkan error jika data benar-benar kosong (awal)
-      // Jika error saat load more (scroll bawah), biarkan data lama tetap tampil
+      // Only show error state if the list is completely empty (initial load failed)
+      // Errors during "load more" are ignored to keep the existing list visible
       if (state.value == null || state.value!.isEmpty) {
         state = AsyncValue.error(e, stack);
       }

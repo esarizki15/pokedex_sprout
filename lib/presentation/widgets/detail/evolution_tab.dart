@@ -21,26 +21,38 @@ class _EvolutionTabState extends State<EvolutionTab>
     _evolutionFuture = fetchEvolution();
   }
 
+  // Ensure the state is kept alive when switching tabs
   @override
   bool get wantKeepAlive => true;
 
   Future<List<Map<String, dynamic>>> fetchEvolution() async {
+    // Note: In a production app, use a shared Dio instance via Provider/Repository
     final dio = Dio();
     try {
+      // 1. Fetch Pokemon Species to get the Evolution Chain URL
       final speciesResponse = await dio.get(
         'https://pokeapi.co/api/v2/pokemon-species/${widget.pokemonId}/',
       );
       final evolutionUrl = speciesResponse.data['evolution_chain']['url'];
+
+      // 2. Fetch the actual Evolution Chain
       final chainResponse = await dio.get(evolutionUrl);
       final chainData = chainResponse.data['chain'];
 
       List<Map<String, dynamic>> evolutions = [];
+
+      // 3. Parse the chain (Handling linear evolution up to 3 stages)
+      // Note: This logic assumes a linear chain and doesn't handle branched evolutions (e.g., Eevee)
+
+      // Base Form
       evolutions.add(_parseSpecies(chainData['species']));
 
+      // First Evolution
       if (chainData['evolves_to'].isNotEmpty) {
         var firstEvo = chainData['evolves_to'][0];
         evolutions.add(_parseSpecies(firstEvo['species']));
 
+        // Second Evolution
         if (firstEvo['evolves_to'].isNotEmpty) {
           var secondEvo = firstEvo['evolves_to'][0];
           evolutions.add(_parseSpecies(secondEvo['species']));
@@ -52,18 +64,22 @@ class _EvolutionTabState extends State<EvolutionTab>
     }
   }
 
+  // Helper to extract Name and Image URL from species data
   Map<String, dynamic> _parseSpecies(Map<String, dynamic> speciesData) {
     final name = speciesData['name'];
     final url = speciesData['url'];
+
+    // Extract ID from URL (e.g., https://pokeapi.co/.../1/) to build image URL
     final id = int.parse(url.split('/')[6]);
     final imageUrl =
         'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png';
+
     return {'name': name, 'image': imageUrl};
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Wajib
+    super.build(context); // Required by AutomaticKeepAliveClientMixin
 
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: _evolutionFuture,
@@ -89,6 +105,8 @@ class _EvolutionTabState extends State<EvolutionTab>
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Render Evolution Items
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: evolutions.map((evo) {
@@ -117,6 +135,8 @@ class _EvolutionTabState extends State<EvolutionTab>
                   );
                 }).toList(),
               ),
+
+              // Visual indicator (Arrow) if chain exists
               if (evolutions.length > 1)
                 const Padding(
                   padding: EdgeInsets.only(top: 20),

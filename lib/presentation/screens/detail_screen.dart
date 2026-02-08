@@ -28,7 +28,7 @@ class _DetailScreenState extends State<DetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    // 1. OrientationBuilder membungkus Scaffold agar bisa kondisional AppBar
+    // OrientationBuilder wraps Scaffold to allow conditional AppBar rendering
     return OrientationBuilder(
       builder: (context, orientation) {
         final isPortrait = orientation == Orientation.portrait;
@@ -36,9 +36,9 @@ class _DetailScreenState extends State<DetailScreen>
         return Scaffold(
           backgroundColor: widget.pokemon.color,
 
-          // 2. LOGIC PENTING:
-          // Jika Portrait -> Pakai AppBar bawaan Scaffold (Koordinat Body jadi aman)
-          // Jika Landscape -> AppBar NULL (Biar layar lega, tombol back manual)
+          // Conditional AppBar Logic:
+          // Portrait: Use default AppBar (Body coordinates start below it).
+          // Landscape: Set AppBar to null to maximize screen space (Manual back button required).
           appBar: isPortrait
               ? AppBar(
                   backgroundColor: Colors.transparent,
@@ -48,8 +48,9 @@ class _DetailScreenState extends State<DetailScreen>
                     onPressed: () => Navigator.pop(context),
                   ),
                 )
-              : null, // Landscape tidak ada AppBar
-          // Body menyesuaikan orientasi
+              : null,
+
+          // Switch layout based on orientation
           body: isPortrait
               ? _buildPortraitLayout(context)
               : _buildLandscapeLayout(context),
@@ -58,13 +59,13 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  // --- LAYOUT 1: PORTRAIT (Tweak Visual Kamu) ---
+  // --- PORTRAIT LAYOUT ---
   Widget _buildPortraitLayout(BuildContext context) {
     final pokemon = widget.pokemon;
 
     return Stack(
       children: [
-        // 1. HEADER INFO
+        // 1. Header Info (Name, ID, Types)
         Positioned(
           left: 24,
           right: 24,
@@ -122,7 +123,7 @@ class _DetailScreenState extends State<DetailScreen>
           ),
         ),
 
-        // 2. BACKGROUND POKEBALL (Posisi Tweak: 105)
+        // 2. Background Pokeball Decoration
         Positioned(
           top: 105,
           right: -20,
@@ -133,7 +134,7 @@ class _DetailScreenState extends State<DetailScreen>
           ),
         ),
 
-        // 3. WHITE SHEET (Tinggi Tweak: 0.565)
+        // 3. White Bottom Sheet (Content Area)
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -152,7 +153,7 @@ class _DetailScreenState extends State<DetailScreen>
           ),
         ),
 
-        // 4. HERO IMAGE (Posisi & Tinggi Tweak: 85 & 260)
+        // 4. Hero Image (Floating above the sheet)
         Positioned(
           top: 85,
           left: 0,
@@ -171,13 +172,13 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  // --- LAYOUT 2: LANDSCAPE (Sudah Diperbaiki Type Chips-nya) ---
+  // --- LANDSCAPE LAYOUT ---
   Widget _buildLandscapeLayout(BuildContext context) {
     final pokemon = widget.pokemon;
 
     return Row(
       children: [
-        // KIRI: INFO & GAMBAR
+        // Left Side: Info & Image
         Expanded(
           flex: 4,
           child: Container(
@@ -193,7 +194,7 @@ class _DetailScreenState extends State<DetailScreen>
                     size: 250,
                   ),
                 ),
-                // Tombol Back Manual (Karena AppBar null di Landscape)
+                // Manual Back Button (Since AppBar is null)
                 Positioned(
                   top: 20,
                   left: 10,
@@ -212,7 +213,7 @@ class _DetailScreenState extends State<DetailScreen>
                         tag: pokemon.id,
                         child: CachedNetworkImage(
                           imageUrl: pokemon.imageUrl,
-                          height: 150, // Sedikit lebih kecil agar muat
+                          height: 150, // Smaller image for landscape
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -228,7 +229,7 @@ class _DetailScreenState extends State<DetailScreen>
                       ),
                       const SizedBox(height: 10),
 
-                      // --- FIX: TYPE CHIPS DITAMBAHKAN KEMBALI ---
+                      // Type Chips
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: pokemon.types
@@ -256,7 +257,6 @@ class _DetailScreenState extends State<DetailScreen>
                             )
                             .toList(),
                       ),
-                      // -------------------------------------------
                     ],
                   ),
                 ),
@@ -265,7 +265,7 @@ class _DetailScreenState extends State<DetailScreen>
           ),
         ),
 
-        // KANAN: TABS
+        // Right Side: Tabs Content
         Expanded(
           flex: 6,
           child: Container(

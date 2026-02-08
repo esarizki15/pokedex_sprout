@@ -12,6 +12,7 @@ class PokemonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine card color based on the primary type
     final color = AppColors.getTypeColor(pokemon.types.first);
 
     return GestureDetector(
@@ -28,23 +29,23 @@ class PokemonCard extends StatelessWidget {
             ),
           ],
         ),
-        // ClipRRect tetap ada agar Pokeball yang offset tidak "bocor" keluar kartu
+        // ClipRRect is required to clip the overflowing background Pokeball icon
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
           child: Stack(
             children: [
-              // 1. BACKGROUND: Pokeball (Posisi lebih tenggelam ke pojok)
+              // 1. BACKGROUND: Large Pokeball (Positioned partially off-screen)
               Positioned(
                 bottom: -24,
                 right: -15,
                 child: Icon(
                   Icons.catching_pokemon,
                   color: Colors.white.withValues(alpha: 0.2),
-                  size: 125, // Ukuran besar sebagai background
+                  size: 125,
                 ),
               ),
 
-              // 2. INFO: Nama & Tipe
+              // 2. INFO: Name & Type Chips (Top Left)
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -88,11 +89,9 @@ class PokemonCard extends StatelessWidget {
                 ),
               ),
 
-              // 3. FOREGROUND: Pokemon (Posisi agak maju dibanding Pokeball)
-              // Logika:
-              // Pokeball ada di bottom -24.
-              // Pokemon ada di bottom 5.
-              // Selisih ini membuat Pokemon terlihat "naik" dan keluar dari lingkaran.
+              // 3. FOREGROUND: Pokemon Image
+              // Logic: The Pokemon (bottom: 5) is placed higher than the Pokeball (bottom: -24)
+              // to create a depth effect where the Pokemon "pops" out.
               Positioned(
                 bottom: 5,
                 right: 5,
@@ -110,7 +109,7 @@ class PokemonCard extends StatelessWidget {
                 ),
               ),
 
-              // 4. ID Number
+              // 4. ID Number (Top Right Watermark)
               Positioned(
                 top: 10,
                 right: 10,

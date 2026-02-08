@@ -25,6 +25,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _onScroll() {
+    // Debounce scroll events to prevent excessive API calls
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
 
     _debounceTimer = Timer(const Duration(milliseconds: 150), () {
@@ -32,6 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final maxScroll = _scrollController.position.maxScrollExtent;
         final currentScroll = _scrollController.position.pixels;
 
+        // Fetch next page when user scrolls to 90% of the list
         if (currentScroll >= maxScroll * 0.9) {
           ref.read(pokemonListProvider.notifier).fetchNextPage();
         }
@@ -52,10 +54,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      // HAPUS extendBodyBehindAppBar karena kita mau pakai SafeArea
       body: Stack(
         children: [
-          // 1. BACKGROUND WATERMARK (Tetap di belakang semua layer)
+          // 1. Background Watermark (Remains behind all layers)
           Positioned(
             top: -70,
             right: -70,
@@ -66,12 +67,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
 
-          // 2. COLUMN: Membagi layar menjadi Header (Fixed) dan Content (Scroll)
+          // 2. Main Layout: Splits screen into Fixed Header and Scrollable Content
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // --- BAGIAN A: HEADER (DIAM) ---
+                // --- SECTION A: STATIC HEADER ---
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24.0,
@@ -87,8 +88,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
 
-                // --- BAGIAN B: LIST CONTENT (SCROLLABLE AREA) ---
-                // Expanded memaksa CustomScrollView hanya menempati sisa ruang di bawah Header
+                // --- SECTION B: SCROLLABLE LIST ---
+                // Expanded ensures CustomScrollView takes up only the remaining space
                 Expanded(
                   child: pokemonState.when(
                     loading: () => _buildShimmerLoading(),
@@ -102,6 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                       return LayoutBuilder(
                         builder: (context, constraints) {
+                          // Adaptive Layout: 4 columns for tablets/desktop, 2 for mobile
                           final int crossAxisCount = constraints.maxWidth > 600
                               ? 4
                               : 2;
@@ -110,9 +112,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             controller: _scrollController,
                             physics: const AlwaysScrollableScrollPhysics(),
                             slivers: [
-                              // Grid Pokemon
+                              // Pokemon Grid
                               SliverPadding(
-                                // Padding top 0 karena sudah ada jarak dari Header
+                                // Top padding is 0 because Header already provides spacing
                                 padding: const EdgeInsets.only(
                                   left: 16,
                                   right: 16,
@@ -144,7 +146,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                               ),
 
-                              // Loader Bawah
+                              // Bottom Loader (Infinite Scroll Indicator)
                               const SliverToBoxAdapter(
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(vertical: 24.0),

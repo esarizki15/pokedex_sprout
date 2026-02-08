@@ -19,14 +19,14 @@ void main() {
     test('getPokemonList returns List<PokemonModel> on success', () async {
       // ARRANGE
 
-      // 1. Mock Response untuk LIST (https://pokeapi.co/api/v2/pokemon?...)
+      // 1. Mock Response for LIST endpoint (Paginated results)
       final mockListResponse = {
         'results': [
           {'name': 'bulbasaur', 'url': 'https://pokeapi.co/api/v2/pokemon/1/'},
         ],
       };
 
-      // 2. Mock Response untuk DETAIL (https://pokeapi.co/api/v2/pokemon/1/)
+      // 2. Mock Response for DETAIL endpoint (Single Pokemon data)
       final mockDetailResponse = {
         'id': 1,
         'name': 'bulbasaur',
@@ -53,7 +53,7 @@ void main() {
         'abilities': [],
       };
 
-      // When call LIST endpoint -> return list
+      // Stubbing: Return list response when the pagination endpoint is called
       when(
         () => mockDio.get(
           'https://pokeapi.co/api/v2/pokemon',
@@ -67,7 +67,7 @@ void main() {
         ),
       );
 
-      // When call DETAIL endpoint -> return detail
+      // Stubbing: Return detail response when the specific Pokemon URL is called
       when(
         () => mockDio.get('https://pokeapi.co/api/v2/pokemon/1/'),
       ).thenAnswer(
@@ -82,13 +82,13 @@ void main() {
       final result = await repository.getPokemonList(0, 1);
 
       // ASSERT
-      expect(result, isA<List<PokemonModel>>()); // Pastikan return List
-      expect(result.length, 1); // Pastikan isinya 1
-      expect(result.first.name, 'bulbasaur'); // Pastikan namanya benar
+      expect(result, isA<List<PokemonModel>>()); // Verify return type
+      expect(result.length, 1); // Verify list length
+      expect(result.first.name, 'bulbasaur'); // Verify content correctness
     });
 
     test('throws Exception when API fails', () async {
-      // Mock Error
+      // Stubbing: Simulate an API error (e.g., 404 or 500)
       when(
         () =>
             mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
@@ -99,7 +99,7 @@ void main() {
         ),
       );
 
-      // Assert Error
+      // ASSERT: Verify that the repository throws an exception
       expect(repository.getPokemonList(0, 20), throwsException);
     });
   });
