@@ -15,7 +15,7 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'Pokedex Senior Test',
+      title: 'Pokedex',
       debugShowCheckedModeBanner: false,
 
       // Theme Setup
