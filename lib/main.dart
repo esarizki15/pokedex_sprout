@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'presentation/screens/home_screen.dart';
+import 'core/router/app_router.dart'; // Import router yang baru
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-final _router = GoRouter(
-  initialLocation: '/',
-  routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
-);
-
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Panggil routerProvider yang sudah kita buat
+    final router = ref.watch(routerProvider);
+
     return MaterialApp.router(
       title: 'Pokedex Senior Test',
       debugShowCheckedModeBanner: false,
+
+      // Theme Setup
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        scaffoldBackgroundColor: Colors.white,
       ),
-      routerConfig: _router,
+
+      // Router Config
+      routerConfig: router,
     );
   }
 }
