@@ -1,5 +1,9 @@
 # Pokedex App 📱
 
+[![Deploy Flutter Web](https://github.com/esarizki15/pokedex_sprout/actions/workflows/main.yml/badge.svg)](https://esarizki15.github.io/pokedex_sprout/)
+
+🌐 **[TRY LIVE WEB DEMO HERE](https://esarizki15.github.io/pokedex_sprout/)**
+
 A modern, responsive Pokedex application built with Flutter, demonstrating **Repository Pattern** and **Riverpod** state management.
 
 ## ✨ Features
@@ -17,7 +21,7 @@ A modern, responsive Pokedex application built with Flutter, demonstrating **Rep
 * **Network:** Dio
 * **Routing:** GoRouter
 * **Architecture:** MVVM with Repository Pattern
-* **Testing:** Flutter Test & Mocktail
+* **Testing:** Flutter Test & Mocktail 🧪
 * **UI Components:** Google Fonts, Shimmer, CachedNetworkImage
 
 ## 📸 Screenshots
@@ -28,11 +32,15 @@ A modern, responsive Pokedex application built with Flutter, demonstrating **Rep
 
 ## 🚀 How to Run
 
-1.  Clone the repository
-2.  Run `flutter pub get`
-3.  Run `dart run flutter_launcher_icons` (optional: to generate icons)
-4.  Run `flutter run`
-5.  Run `flutter test` (Optional: to execute unit tests)
+1.  **Clone the repository**
+2.  **Install dependencies:**
+    `flutter pub get`
+3.  **(Optional) Generate launcher icons:**
+    `dart run flutter_launcher_icons`
+4.  **Run the app:**
+    `flutter run`
+5.  **(Optional) Execute unit tests:**
+    `flutter test`
 
 ## 📂 Project Structure
 
