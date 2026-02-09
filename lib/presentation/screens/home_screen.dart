@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pokedex/presentation/providers/pokemon_provider.dart';
 import 'package:pokedex/presentation/widgets/common/pokemon_card.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:pokedex/presentation/widgets/common/shimmer_loading_grid.dart';
+// Import widget shimmer yang baru dibuat
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -92,7 +93,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // Expanded ensures CustomScrollView takes up only the remaining space
                 Expanded(
                   child: pokemonState.when(
-                    loading: () => _buildShimmerLoading(),
+                    // Call the separated widget here
+                    loading: () => const ShimmerLoadingGrid(),
                     error: (err, stack) => Center(child: Text('Error: $err')),
                     data: (pokemons) {
                       if (pokemons.isEmpty) {
@@ -169,29 +171,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildShimmerLoading() {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 1.4,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: 8,
-      itemBuilder: (context, index) => Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
       ),
     );
   }
