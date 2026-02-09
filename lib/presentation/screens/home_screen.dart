@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pokedex/presentation/providers/pokemon_provider.dart';
 import 'package:pokedex/presentation/widgets/common/pokemon_card.dart';
 import 'package:pokedex/presentation/widgets/common/shimmer_loading_grid.dart';
-// Import widget shimmer yang baru dibuat
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
