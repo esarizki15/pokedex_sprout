@@ -17,6 +17,7 @@ A modern, responsive Pokedex application built with Flutter, demonstrating **Rep
 * **Network:** Dio
 * **Routing:** GoRouter
 * **Architecture:** MVVM with Repository Pattern
+* **Testing:** Flutter Test & Mocktail
 * **UI Components:** Google Fonts, Shimmer, CachedNetworkImage
 
 ## 📸 Screenshots
@@ -31,6 +32,7 @@ A modern, responsive Pokedex application built with Flutter, demonstrating **Rep
 2.  Run `flutter pub get`
 3.  Run `dart run flutter_launcher_icons` (optional: to generate icons)
 4.  Run `flutter run`
+5.  Run `flutter test` (Optional: to execute unit tests)
 
 ## 📂 Project Structure
 
