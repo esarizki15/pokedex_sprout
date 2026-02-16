@@ -1,7 +1,5 @@
 # Pokedex App 📱
 
-[![Deploy Flutter Web](https://github.com/esarizki15/pokedex_sprout/actions/workflows/main.yml/badge.svg)](https://esarizki15.github.io/pokedex_sprout/)
-
 🌐 **[TRY LIVE WEB DEMO HERE](https://esarizki15.github.io/pokedex_sprout/)**
 
 A modern, responsive Pokedex application built with Flutter, demonstrating **Repository Pattern** and **Riverpod** state management.
@@ -16,7 +14,7 @@ A modern, responsive Pokedex application built with Flutter, demonstrating **Rep
 
 ## 🛠 Tech Stack
 
-* **Framework:** Flutter (3.10+)
+* **Framework:** Flutter (3.38.9)
 * **State Management:** Riverpod (ConsumerWidget & StateNotifier)
 * **Network:** Dio
 * **Routing:** GoRouter
